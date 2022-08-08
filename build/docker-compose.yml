@@ -1,8 +1,0 @@
-version: '3.3'
-services:
-  standalone-chrome:
-    ports:
-      - '4444:4444'
-    volumes:
-      - '/dev/shm:/dev/shm'
-    image: 'selenium/standalone-chrome:3.141.59-xenon'

@@ -56,6 +56,11 @@ func Error(msg string, fields ...zap.Field) {
 	logger.Error(msg, fields...)
 }
 
+// Panic パニック
+func Panic(msg string, fields ...zap.Field) {
+	logger.Panic(msg, fields...)
+}
+
 // Fatal 致命的
 func Fatal(msg string, fields ...zap.Field) {
 	logger.Fatal(msg, fields...)

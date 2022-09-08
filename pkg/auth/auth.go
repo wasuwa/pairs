@@ -7,6 +7,8 @@ import (
 	"pairs/pkg/logging"
 	"pairs/pkg/selenium"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 const (
@@ -40,18 +42,11 @@ func LoginEmail(selenium *selenium.Selenium) error {
 	if err != nil {
 		return err
 	}
-	code := message.Snippet[16:22]
 
 	// 認証コードの入力
-	fields := page.AllByClass("css-xavfkq")
-	fields.At(0).Fill(code[])
-	fields.At(1).Fill()
-	fields.At(2).Fill()
-	fields.At(3).Fill()
-	fields.At(4).Fill()
-	fields.At(5).Fill()
-	fields.At(6).Fill()
-
+	code := message.Snippet[16:22]
+	logging.Info("ペアーズの認証コードをブラウザで入力してください（10秒以内）", zap.String("AuthCode", code))
+	time.Sleep(time.Second * 10)
 
 	return nil
 }

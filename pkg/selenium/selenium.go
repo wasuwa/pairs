@@ -19,7 +19,6 @@ func InitChrome() *Selenium {
 
 	opts := agouti.ChromeOptions(
 		"args", []string{
-			"--headless",
 			"--disable-gpu",
 		},
 	)

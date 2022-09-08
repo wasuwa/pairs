@@ -39,10 +39,10 @@ func NewGmail() (*Gmail, error) {
 	}
 
 	url := config.AuthCodeURL("state")
-	logging.Info("Gmailの認証URLです（ペアーズのメールアドレスでログインしてください）", zap.String("URL", url))
+	logging.Info("Gmailの認可URL（ペアーズのメールアドレスでログインしてください）", zap.String("URL", url))
 
 	var code string
-	fmt.Print("URLに含まれている「code」を入力してください: ")
+	fmt.Print("Googleの認可コードを入力してください: ")
 	if _, err := fmt.Scan(&code); err != nil {
 		return nil, err
 	}

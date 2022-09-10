@@ -14,7 +14,7 @@ type Selenium struct {
 }
 
 // InitChrome Chrome Web driver のセットアップ
-func InitChrome() *Selenium {
+func InitChrome() (*Selenium, error) {
 	logging.Info("ChromeDriverを起動します")
 
 	opts := agouti.ChromeOptions(
@@ -24,26 +24,24 @@ func InitChrome() *Selenium {
 	)
 	driver := agouti.ChromeDriver(opts)
 	if err := driver.Start(); err != nil {
-		logging.Panic("ChromeDriverが起動できませんでした", zap.Error(err))
-		panic(err)
+		return nil, err
 	}
 
 	page, err := driver.NewPage()
 	if err != nil {
-		logging.Panic("Pageの初期化に失敗しました", zap.Error(err))
-		panic(err)
+		return nil, err
 	}
 
-	return &Selenium{
+	s := &Selenium{
 		Driver: driver,
 		Page:   page,
 	}
+	return s, nil
 }
 
 // Stop Web driver の停止
 func (s *Selenium) Stop() {
 	if err := s.Driver.Stop(); err != nil {
 		logging.Panic("ChromeDriverが停止できませんでした", zap.Error(err))
-		panic(err)
 	}
 }

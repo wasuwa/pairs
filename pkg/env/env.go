@@ -1,16 +1,11 @@
 package env
 
-import (
-	"pairs/pkg/logging"
-
-	"github.com/joho/godotenv"
-	"go.uber.org/zap"
-)
+import "github.com/joho/godotenv"
 
 // Init 初期化
-func Init() {
+func Init() error {
 	if err := godotenv.Load("config/.env"); err != nil {
-		logging.Panic("環境変数が読み込めませんでした", zap.Error(err))
-		panic(err)
+		return err
 	}
+	return nil
 }

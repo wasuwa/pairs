@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
 	"pairs/pkg/auth"
 	"pairs/pkg/env"
+	"pairs/pkg/footprint"
 	"pairs/pkg/logging"
 	"pairs/pkg/selenium"
 
@@ -13,15 +13,29 @@ import (
 func main() {
 	logging.Init()
 	defer logging.Sync()
-	logging.Info("ブースト中の足跡付与を開始します")
 
-	env.Init()
+	if err := env.Init(); err != nil {
+		logging.Panic("環境変数が読み込めませんでした", zap.Error(err))
+	}
 
-	s := selenium.InitChrome()
+	s, err := selenium.InitChrome()
+	if err != nil {
+		logging.Panic("ChromeDriverが起動できませんでした", zap.Error(err))
+	}
 	defer s.Stop()
 
+	logging.Info("ブースト中の足跡付与を開始します")
+
 	if err := auth.LoginEmail(s); err != nil {
-		logging.Error("Pairsにメールアドレスでログインできませんでした", zap.Error(err))
-		os.Exit(1)
+		logging.Panic("Pairsにメールアドレスでログインできませんでした", zap.Error(err))
+	}
+
+	f, err := footprint.NewFootprint(18, 25, "東京", "オンライン")
+	if err != nil {
+		logging.Panic("Footprintオブジェクトのバリデーションに失敗しました", zap.Error(err))
+	}
+
+	if err := f.Filtering(s); err != nil {
+		logging.Panic("検索条件のフィルタリングに失敗しました", zap.Error(err))
 	}
 }

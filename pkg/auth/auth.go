@@ -2,11 +2,11 @@ package auth
 
 import (
 	"os"
+	"time"
 
 	"pairs/pkg/google"
 	"pairs/pkg/logging"
 	"pairs/pkg/selenium"
-	"time"
 
 	"go.uber.org/zap"
 )

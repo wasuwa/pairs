@@ -30,7 +30,7 @@ func main() {
 		logging.Panic("Pairsにメールアドレスでログインできませんでした", zap.Error(err))
 	}
 
-	f, err := footprint.NewFootprint(18, 25, "東京", "オンライン")
+	f, err := footprint.NewFootprint(18, 26, []string{"東京", "神奈川", "千葉", "埼玉"}, "オンライン")
 	if err != nil {
 		logging.Panic("Footprintオブジェクトのバリデーションに失敗しました", zap.Error(err))
 	}
@@ -38,4 +38,6 @@ func main() {
 	if err := f.Filtering(s); err != nil {
 		logging.Panic("検索条件のフィルタリングに失敗しました", zap.Error(err))
 	}
+
+	logging.Info("ブースト中の足跡付与を終了します")
 }

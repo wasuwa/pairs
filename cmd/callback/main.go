@@ -21,6 +21,6 @@ func main() {
 }
 
 func callbackGoogle(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "このページを閉じてください")
+	fmt.Fprint(w, "このページは閉じてください")
 	logging.Info("Googleの認可コード", zap.String("Code", r.FormValue("code")))
 }

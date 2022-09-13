@@ -30,7 +30,7 @@ func main() {
 		logging.Panic("Pairsにメールアドレスでログインできませんでした", zap.Error(err))
 	}
 
-	f, err := footprint.NewFootprint(18, 26, []string{"東京", "神奈川", "千葉", "埼玉"}, "オンライン")
+	f, err := footprint.NewFootprint(18, 26, []string{"新潟", "富山", "石川", "埼玉", "東京", "神奈川", "千葉"}, "オンライン")
 	if err != nil {
 		logging.Panic("Footprintオブジェクトのバリデーションに失敗しました", zap.Error(err))
 	}

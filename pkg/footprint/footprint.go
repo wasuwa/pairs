@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"pairs/pkg/logging"
 	"pairs/pkg/selenium"
 	"strconv"
 	"time"
@@ -47,11 +48,19 @@ func NewFootprint(minAge, maxAge uint8, residenceArea []string, lastLogin string
 
 // Filtering 条件でフィルタリング
 func (f *Footprint) Filtering(selenium *selenium.Selenium) error {
+	logging.Info("検索条件を設定します")
+
 	page := selenium.Page
 	if err := page.Navigate(filteringURL); err != nil {
 		return err
 	}
 	time.Sleep(time.Second * 2)
+
+	// 検索条件のクリア
+	if err := page.FindByButton("すべてリセット").Click(); err != nil {
+		return err
+	}
+	time.Sleep(time.Second * 1)
 
 	selects := page.AllByClass("css-1bq0nkw")
 
@@ -60,18 +69,21 @@ func (f *Footprint) Filtering(selenium *selenium.Selenium) error {
 	if err := min.Select(fmt.Sprintf("%d歳", f.MinAge)); err != nil {
 		return err
 	}
+	time.Sleep(time.Second * 1)
 
 	// 最大年齢の設定
 	max := selects.At(1)
 	if err := max.Select(fmt.Sprintf("%d歳", f.MaxAge)); err != nil {
 		return err
 	}
+	time.Sleep(time.Second * 1)
 
 	// 最終ログインの設定
 	last := selects.At(4)
 	if err := last.Select(f.LastLogin); err != nil {
 		return err
 	}
+	time.Sleep(time.Second * 1)
 
 	// 居住地から ID を取得
 	ids, err := f.findIDForResidenceArea()
@@ -91,10 +103,12 @@ func (f *Footprint) Filtering(selenium *selenium.Selenium) error {
 		return err
 	}
 
+	areas := page.AllByClass("css-17tl92q")
 	for _, id := range ids {
-		if err := page.AllByClass("css-17tl92q").At(id).Click(); err != nil {
+		if err := areas.At(id).Click(); err != nil {
 			return err
 		}
+		time.Sleep(time.Second * 1)
 	}
 
 	// 保存
@@ -105,8 +119,6 @@ func (f *Footprint) Filtering(selenium *selenium.Selenium) error {
 	if err := page.FindByButton("この条件で検索").Click(); err != nil {
 		return err
 	}
-
-	time.Sleep(time.Second * 4)
 
 	return nil
 }

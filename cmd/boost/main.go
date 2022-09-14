@@ -24,8 +24,6 @@ func main() {
 	}
 	defer s.Stop()
 
-	logging.Info("ブースト中の足跡付与を開始します")
-
 	if err := auth.LoginEmail(s); err != nil {
 		logging.Panic("Pairsにメールアドレスでログインできませんでした", zap.Error(err))
 	}
@@ -37,6 +35,12 @@ func main() {
 
 	if err := f.Filtering(s); err != nil {
 		logging.Panic("検索条件のフィルタリングに失敗しました", zap.Error(err))
+	}
+
+	logging.Info("ブースト中の足跡付与を開始します")
+
+	if err := f.StepOn(s); err != nil {
+		logging.Panic("足跡の付与に失敗しました", zap.Error(err))
 	}
 
 	logging.Info("ブースト中の足跡付与を終了します")

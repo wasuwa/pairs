@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
 	"pairs/pkg/logging"
 	"pairs/pkg/selenium"
@@ -121,6 +122,56 @@ func (f *Footprint) Filtering(selenium *selenium.Selenium) error {
 	}
 
 	return nil
+}
+
+// StepOn 足跡を残す
+func (f *Footprint) StepOn(selenium *selenium.Selenium) error {
+	page := selenium.Page
+	if err := page.Navigate(homeURL); err != nil {
+		return err
+	}
+	time.Sleep(time.Second * 2)
+
+	// 1番目のユーザーをクリック
+	if err := page.AllByClass("css-opde7s").At(0).Click(); err != nil {
+		return err
+	}
+	time.Sleep(time.Second * 1)
+
+	// 右矢印をクリック
+	if err := page.AllByClass("css-1d94zew").At(0).Click(); err != nil {
+		return err
+	}
+
+	// 乱数の初期化
+	rand.Seed(time.Now().UnixNano())
+
+	// 足跡を残す
+	var c int
+	for {
+		if err := page.AllByClass("css-1d94zew").At(1).Click(); err != nil {
+			// ユーザーの詳細画面を閉じる
+			time.Sleep(time.Second * 2)
+			if err := page.AllByClass("css-1ureyjg").At(0).Click(); err != nil {
+				return err
+			}
+			time.Sleep(time.Second * 1)
+
+			// ページの最下部まで移動し、次のユーザーを読み込む
+			page.RunScript("window.scroll(0, document.documentElement.scrollHeight - document.documentElement.clientHeight);", nil, nil)
+			time.Sleep(time.Second * 1)
+
+			// 次のユーザーをクリックし、処理を再開
+			if err := page.AllByClass("css-opde7s").At(c).Click(); err != nil {
+				return err
+			}
+			time.Sleep(time.Second * 3)
+		}
+
+		c++
+		println(c)
+		time.Sleep(time.Millisecond * time.Duration(rand.Intn(8000)))
+	}
 }
 
 // findIDForResidenceArea 居住地から ID を検索する
